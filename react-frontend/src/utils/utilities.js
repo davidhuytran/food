@@ -9,10 +9,12 @@ export async function handleSignUp(data) {
 }
 
 export async function handleLogin(data) {
+    
     const response = await axios.post("/auth/login", {
         email: data.email,
         password: data.password,
     });
+    
     return response
 }
 

@@ -6,9 +6,6 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from '@material-ui/core/styles';
 import { handleSignUp, getUsers } from "../utils/utilities";
 import { Button } from '@material-ui/core';
-import  { Redirect } from 'react-router-dom'
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,16 +23,18 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     textAlign: "center",
     borderRadius: 30,
-    // margin: theme.spacing(20,0,2)
   },
   submit: {
     margin: theme.spacing(3,0,3),
   },
+  errorMsg: {
+    color: "red",
+  }
 }))
 
 export default function SignUp() {
   
-  
+  const [errorMsg, setErrorMsg] = useState("");
   const [value, setValue] = useState({});
   const classes = useStyles();
 
@@ -50,14 +49,16 @@ export default function SignUp() {
   async function handleSubmit(e) {
     e.preventDefault();
     const response = await handleSignUp(value);
-    console.log(response.request);
     const { status } = response.data
-    
-    // if(status === 200) {
-    //   window.location = "/home";
-    // }
+    console.log(response);
+    console.log(status);
+    if (status == 200) {
+      window.location = "/";
+    }
+    else if (status == 400 ) {
+      setErrorMsg("Account already exists.")
+    }
 }
-
   return (
     <div>
         <Grid
@@ -101,6 +102,9 @@ export default function SignUp() {
                 >
                 Submit
                 </Button>
+                <div className={classes.errorMsg}>
+                  {errorMsg}
+                </div>
               </form>
             </Paper>
           </Container>

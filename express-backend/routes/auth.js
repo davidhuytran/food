@@ -17,38 +17,37 @@ router.post("/signup", async (req, res) => {
                 return next(err);
             }
             if (newUser) {
-                return res.status(200).send({msg: "Account created "});
+                return res.json({
+                    status: 200,
+                    msg: "Account has been created.",
+                })
             }
         });
     }
-    return res.status(400).send("Account already exists");
+    return res.json({
+        status: 400,
+        msg: "Account already exists."
+    })
 })
 
 router.post("/login", (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
-      
       if (err) {
         return next(err);
       }
       if (!user) {
-        console.log("ERROR");
         return res.json({
-          
           status: info.status,
           msg: info.msg
         })
       }
-      
-      // LogIn User
-      // req / res held in closure
       req.logIn(user, (err) => {
         if (err) {
           return next(err);
         }
         if (user) {
-          console.log("HEY WE MDE IT");
           return res.json({
-            status: 200,
+            status: info.status,
             msg: info.msg
           })
         }
