@@ -31,12 +31,15 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3,0,3),
   },
+  errorMsg: {
+    color: "red",
+  },
 }))
 
 export default function Login() {
   
-  const [login, setLogin] = useState(Boolean);
   const [value, setValue] = useState({});
+  const [errorMsg, setErrorMsg] = useState("");
   const classes = useStyles();
 
   function onChange(e) {
@@ -51,8 +54,15 @@ export default function Login() {
     e.preventDefault();
     const response = await handleLogin(value);
     const { status } = response.data
-    if(status === 200) {
+    console.log(status)
+    if (status === 200) {
       window.location = "/home";
+    }
+    else if (status == 409) {
+      setErrorMsg("The email you've entered does not match any account");
+    }
+    else if (status == 410) {
+      setErrorMsg("The password you've entered is incorrect.")
     }
 }
 
@@ -99,6 +109,9 @@ export default function Login() {
                 >
                 Submit
                 </Button>
+                <div className={classes.errorMsg}>
+                  {errorMsg}
+                </div>
               </form>
             </Paper>
           </Container>
