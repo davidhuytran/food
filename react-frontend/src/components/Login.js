@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "100%",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center"
+    justifyContent: "center",
+    alignItems: "center",
   },
   background: {
     backgroundColor: "orange",
@@ -26,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     textAlign: "center",
     borderRadius: 30,
+    width: "40%"
+    
     // margin: theme.spacing(20,0,2)
   },
   submit: {
@@ -33,6 +36,18 @@ const useStyles = makeStyles((theme) => ({
   },
   errorMsg: {
     color: "red",
+  },
+  textfield1: {
+    [`& fieldset`]: {
+      borderRadius: 25,
+    },
+    margin: theme.spacing(3,0,3),  
+  },
+  textfield2: {
+    [`& fieldset`]: {
+      borderRadius: 25,
+    },  
+    margin: theme.spacing(0,0,3),
   },
 }))
 
@@ -54,12 +69,14 @@ export default function Login() {
     e.preventDefault();
     const response = await handleLogin(value);
     const { status } = response.data
-    console.log(status)
+    if (!value.password){
+      setErrorMsg("Please enter a password.");
+    }
     if (status === 200) {
       window.location = "/home";
     }
     else if (status == 409) {
-      setErrorMsg("The email you've entered does not match any account");
+      setErrorMsg("The email you've entered does not match any account.");
     }
     else if (status == 410) {
       setErrorMsg("The password you've entered is incorrect.")
@@ -71,14 +88,20 @@ export default function Login() {
         <Grid
         className={classes.root}
         >
-          <Container component="main" maxwidth="xs">
+          <Grid 
+          container 
+          spacing={0} 
+          direction="column" 
+          alignItems="center"
+          justify="center">
+            Login Page
             <Paper className={classes.paper}>
-              Sign In Page
               <form noValidate>
                 <TextField 
-                margin="normal" 
+                className={classes.textfield1}
+                // margin="normal" 
+                margin="normal"
                 variant="outlined"
-                required
                 value={value.email || ""}
                 onChange={onChange}
                 id="email"
@@ -89,32 +112,33 @@ export default function Login() {
                 />
                 <br/>
                 <TextField 
+                className={classes.textfield2}
                 margin="normal" 
                 variant="outlined"
-                required
                 value={value.password || ""}
                 onChange={onChange}
                 id="password"
                 label="Password"
                 name="password"
                 autoComplete="password"
+                borderRadius="10"
                 />
                 <br/>
-                <Button
+                <div className={classes.errorMsg}>
+                  {errorMsg}
+                </div>
+              </form>
+            </Paper>
+            <Button
                 type="submit"
                 variant="contained"
                 color="primary"
                 className={classes.submit}
                 onClick={handleSubmit}
                 >
-                Submit
+                Login
                 </Button>
-                <div className={classes.errorMsg}>
-                  {errorMsg}
-                </div>
-              </form>
-            </Paper>
-          </Container>
+          </Grid>
         </Grid>
     </div>
   )
