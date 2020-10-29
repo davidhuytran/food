@@ -27,27 +27,28 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     textAlign: "center",
     borderRadius: 30,
-    width: "40%"
-    
-    // margin: theme.spacing(20,0,2)
+    width: "40%" 
   },
   submit: {
     margin: theme.spacing(3,0,3),
+    width: "15%"
   },
   errorMsg: {
     color: "red",
   },
   textfield1: {
     [`& fieldset`]: {
-      borderRadius: 25,
+      borderRadius: 15,
     },
-    margin: theme.spacing(3,0,3),  
+    margin: theme.spacing(3,0,3),
+    width: "45%",
   },
   textfield2: {
     [`& fieldset`]: {
-      borderRadius: 25,
+      borderRadius: 15,
     },  
     margin: theme.spacing(0,0,3),
+    width: "45%",
   },
 }))
 
@@ -94,7 +95,7 @@ export default function Login() {
           direction="column" 
           alignItems="center"
           justify="center">
-            Login Page
+            {/* Login Page */}
             <Paper className={classes.paper}>
               <form noValidate>
                 <TextField 

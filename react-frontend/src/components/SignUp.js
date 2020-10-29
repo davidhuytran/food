@@ -23,13 +23,29 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     textAlign: "center",
     borderRadius: 30,
+    width: "40%"
   },
   submit: {
     margin: theme.spacing(3,0,3),
+    width: "15%"
   },
   errorMsg: {
     color: "red",
-  }
+  },
+  textfield1: {
+    [`& fieldset`]: {
+      borderRadius: 15,
+    },
+    margin: theme.spacing(3,0,3),
+    width: "45%",
+  },
+  textfield2: {
+    [`& fieldset`]: {
+      borderRadius: 15,
+    },  
+    margin: theme.spacing(0,0,3),
+    width: "45%",
+  },
 }))
 
 export default function SignUp() {
@@ -64,14 +80,19 @@ export default function SignUp() {
         <Grid
         className={classes.root}
         >
-          <Container component="main" maxwidth="xs">
+          <Grid 
+          container 
+          spacing={0} 
+          direction="column" 
+          alignItems="center"
+          justify="center">
             <Paper className={classes.paper}>
-              Sign Up Page
+              
               <form noValidate>
                 <TextField 
+                className={classes.textfield1}
                 margin="normal" 
                 variant="outlined"
-                required
                 value={value.email || ""}
                 onChange={onChange}
                 id="email"
@@ -82,9 +103,9 @@ export default function SignUp() {
                 />
                 <br/>
                 <TextField 
+                className={classes.textfield2}
                 margin="normal" 
                 variant="outlined"
-                required
                 value={value.password || ""}
                 onChange={onChange}
                 id="password"
@@ -93,21 +114,21 @@ export default function SignUp() {
                 autoComplete="password"
                 />
                 <br/>
-                <Button
+                <div className={classes.errorMsg}>
+                  {errorMsg}
+                </div>
+              </form>
+            </Paper>
+            <Button
                 type="submit"
                 variant="contained"
                 color="primary"
                 className={classes.submit}
                 onClick={handleSubmit}
                 >
-                Submit
+                Sign Up
                 </Button>
-                <div className={classes.errorMsg}>
-                  {errorMsg}
-                </div>
-              </form>
-            </Paper>
-          </Container>
+          </Grid>
         </Grid>
     </div>
   )
