@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
-import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from '@material-ui/core/styles';
-import { handleLogin, getUsers} from "../utils/utilities";
+import { handleLogin } from "../utils/utilities";
 import { Button } from '@material-ui/core';
-import  { Redirect } from 'react-router-dom'
-
-
+import Container from '@material-ui/core/Container';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,13 +22,12 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "100vh"
   },
   paper: {
-    textAlign: "center",
+    width: "100%",
     borderRadius: 30,
-    width: "40%" 
   },
   submit: {
-    margin: theme.spacing(3,0,3),
-    width: "15%"
+    margin: theme.spacing(3,0,0),
+    width: "80%"
   },
   errorMsg: {
     color: "red",
@@ -40,16 +36,21 @@ const useStyles = makeStyles((theme) => ({
     [`& fieldset`]: {
       borderRadius: 15,
     },
-    margin: theme.spacing(3,0,3),
-    width: "45%",
+    margin: theme.spacing(3,1,2),
+    width: "90%",
   },
   textfield2: {
     [`& fieldset`]: {
       borderRadius: 15,
     },  
-    margin: theme.spacing(0,0,3),
-    width: "45%",
+    margin: theme.spacing(1,1,3),
+    width: "90%",
   },
+  form: {
+    justifyContent: "center",
+    justify: "center",
+    textAlign: "center",
+  }
 }))
 
 export default function Login() {
@@ -84,23 +85,15 @@ export default function Login() {
     }
 }
 
-  return (
-    <div>
-        <Grid
-        className={classes.root}
-        >
-          <Grid 
-          container 
-          spacing={0} 
-          direction="column" 
-          alignItems="center"
-          justify="center">
-            {/* Login Page */}
-            <Paper className={classes.paper}>
-              <form noValidate>
+return (
+  <div className={classes.root}>
+    <Container maxWidth="xs">
+      <Grid container justify="center" spacing={0} direction="column" alignItems="center">
+          <Paper className={classes.paper}>
+            <form noValidate className={classes.form}>
+              <Grid item xs={12}>
                 <TextField 
                 className={classes.textfield1}
-                // margin="normal" 
                 margin="normal"
                 variant="outlined"
                 value={value.email || ""}
@@ -111,8 +104,9 @@ export default function Login() {
                 autoComplete="email"
                 autoFocus
                 />
-                <br/>
-                <TextField 
+              </Grid>
+              <Grid item xs={12} justify="center">
+              <TextField 
                 className={classes.textfield2}
                 margin="normal" 
                 variant="outlined"
@@ -124,23 +118,26 @@ export default function Login() {
                 autoComplete="password"
                 borderRadius="10"
                 />
-                <br/>
                 <div className={classes.errorMsg}>
                   {errorMsg}
                 </div>
-              </form>
-            </Paper>
-            <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={handleSubmit}
-                >
-                Login
-                </Button>
-          </Grid>
-        </Grid>
-    </div>
+              </Grid>
+            </form>
+          </Paper>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          onClick={handleSubmit}
+          >
+        Login
+          </Button>
+      </Grid>
+    </Container>
+  </div>
   )
 }
+
+
+
