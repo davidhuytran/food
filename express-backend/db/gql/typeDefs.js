@@ -16,6 +16,15 @@ const typeDefs = gql`
     type Category {
         id: ID
         name: String
+        user: User
+    }
+
+    type Recipe {
+        id: ID
+        name: String
+        pic: String,
+        ingredients: [Ingredient]
+        categories: [Category]
     }
 
     type Ingredient {
@@ -27,14 +36,8 @@ const typeDefs = gql`
         calories: Int
     }
 
-    type Recipe {
-        id: ID
-        name: String
-        pic: String,
-        ingredients: [Ingredient]
-    }
-
     type Mutation {
+        addCategory(email: String, name: String): Category
         addIngredient(
             name: String
             protein: Int
@@ -42,6 +45,7 @@ const typeDefs = gql`
             carb: Int
             calories: Int
         ): Ingredient
+        addRecipe(name: String): Recipe
     }
 
     type Query {
