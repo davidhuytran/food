@@ -4,11 +4,16 @@ const cors = require('cors');
 const bodyParser = require('body-Parser');
 const logger = require("morgan");
 const passport = require("passport");
+const { ApolloServer } = require("apollo-server-express");
+const schema = require("./db/gql");
 
 require('./db');
 require("./services/passport");
 
 const port = process.env.PORT || 4000;
+
+const server = new ApolloServer({ schema });
+server.applyMiddleware({ app });
 
 app.use(logger('dev'));
 app.use(cors());
