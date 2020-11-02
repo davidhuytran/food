@@ -6,7 +6,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from "@material-ui/core/IconButton";
-
+import Toolbar from '@material-ui/core/Toolbar'
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
+import MoreIcon from '@material-ui/icons/MoreVert';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -26,8 +29,23 @@ export default function Login() {
   const classes = useStyles();
 
   return (
-    <div>
-      Test
+    <div className={classes.root}>
+      <AppBar>
+        <Toolbar>
+          <IconButton>
+            <MenuIcon/>
+          </IconButton>
+          <Grid container justify="flex-end">
+            <IconButton>
+              <SearchIcon/>
+            </IconButton>
+            <IconButton>
+              <MoreIcon/>
+            </IconButton>
+          </Grid>
+
+        </Toolbar>
+      </AppBar>
     </div>
   )
 }
