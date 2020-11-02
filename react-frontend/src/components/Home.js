@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -17,6 +17,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Grid from '@material-ui/core/Grid';
+import { gql, useQuery } from '@apollo/client';
 
 const useStyles = makeStyles({
   list: {
@@ -27,9 +28,25 @@ const useStyles = makeStyles({
   },
 });
 
+// const APPOINTMENT_QUERY = gql`
+//   query Appointment($email: String) {
+//     user(email: $email) {
+//       name
+//       appointments {
+//         id
+//         coach {
+//           id
+//           name
+//         }
+//         date
+//         time
+//       }
+//     }
+//   }`;
+
 export default function TemporaryDrawer() {
   const classes = useStyles();
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     top: false,
     left: false,
     bottom: false,
@@ -72,6 +89,15 @@ export default function TemporaryDrawer() {
       </List>
     </div>
   );
+
+  // const {loading, error, data } = useQuery(APPOINTMENT_QUERY, {
+  //   variables: {email: user.email}
+  // });
+  // if (loading) return 'Loading...';
+  // if (error) return 'Something bad has happened';
+  // if (!data.user) return (
+  //   <div> Loading </div>
+  // )
 
   return (
     <div>
