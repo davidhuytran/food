@@ -33,8 +33,19 @@ const resolvers = {
                 calories: args.calories,
             }).save();
             return newIngredient;
+        },
+        addRecipe: async (parent, args) => {
+            const newRecipe = await new Recipe({
+              name: args.name,
+            }).save();
+            return newRecipe;
+        },
+        addRecipeToCategory: async (parent, args) => {
+            const theRecipe = await Recipe.findById(args.recipe_id);
+            const theCategory = await Category.findById(args.category_id)
+            return theCategory;
         }
     }
-}
+};
 
 module.exports = resolvers;

@@ -46,6 +46,7 @@ const typeDefs = gql`
             calories: Int
         ): Ingredient
         addRecipe(name: String): Recipe
+        addRecipeToCategory(category_id: ID, recipe_id: ID) : Category
     }
 
     type Query {

@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const GET_GREETING = gql`
+const GET_USER = gql`
   query GetUser($email: String!) {
     user(email: $email) {
       email
@@ -83,6 +83,10 @@ const GET_GREETING = gql`
   }
 `;
 
+// const GET_CATEGORY = gql`
+
+// `;
+
 export default function TemporaryDrawer() {
   const classes = useStyles();
   const [state, setState] = useState({
@@ -90,7 +94,7 @@ export default function TemporaryDrawer() {
   });
   const [categories, setCategories] = useState([]);
   const [user, setUser] = useState({});
-  const [string, setString] = useState("");
+  const [categoryId, setCategoryId] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -102,16 +106,15 @@ export default function TemporaryDrawer() {
 
   function handleList(e, value) {
     e.preventDefault();
-    // console.log(myID);
-    setString(value);
+    setCategoryId(value);
   }
 
-  const { loading, error, data } = useQuery(GET_GREETING, {
+  const { loading: loading_user, error, data: data_user } = useQuery(GET_USER, {
     variables: {email: user.email},
   });
-  if (loading) return 'Loading...';
+  if (loading_user) return 'Loading...';
   if (error) return 'Something bad has happened';
-  if (!data.user) return (
+  if (!data_user.user) return (
     <div> Loading </div>
   )
 
@@ -138,7 +141,7 @@ export default function TemporaryDrawer() {
       </List>
       <Divider />
       <List>
-        {data.user.categories.map((text, index) => (
+        {data_user.user.categories.map((text, index) => (
           <ListItem button key={text.id} value={text.id} onClick={e => handleList(e, text.id)}>
             <ListItemIcon>{index % 2 === 0 ? <FastfoodIcon /> : <EmojiFoodBeverageIcon />}</ListItemIcon>
             <ListItemText primary={text.name} />
@@ -189,7 +192,7 @@ export default function TemporaryDrawer() {
           <Paper className={classes.paper}>
             All Foods
             <Grid container className={classes.context}>
-              {string}
+              {categoryId}
             </Grid>
             <Grid container className={classes.contextFooter}>
               <Fab color="secondary" aria-label="add" className={classes.fabButton}>
