@@ -47,16 +47,27 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "85vh",
     margin: theme.spacing(7,0,0),
     textAlign: "center",
-  },
-  test: {
-    justifyContent: "center",
-    justify: "center",
-    textAlign: "center",
+    maxHeight: "85vh",
+
   },
   fabButton: {
     zIndex: 1,
-    justify: "flex-end",
+    height: "6vh",
+    width: "6vh",
+    margin: theme.spacing(-6,2,0)
   },
+  context: {
+    minHeight: "80vh",
+  },
+  contextFooter: {
+    justifyContent: "flex-end",
+    alignContent: "flex-end",
+    
+  },
+  add: {
+    width: "6vw",
+
+  }
 }));
 
 const GET_GREETING = gql`
@@ -64,6 +75,7 @@ const GET_GREETING = gql`
     user(email: $email) {
       email
       categories {
+        id
         name
       }
     }
@@ -73,19 +85,29 @@ const GET_GREETING = gql`
 export default function TemporaryDrawer() {
   const classes = useStyles();
   const [state, setState] = useState({
-    top: false,
     left: false,
-    bottom: false,
-    right: false,
   });
   const [categories, setCategories] = useState([]);
   const [user, setUser] = useState({});
 
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
+  useEffect(() => {
+    async function fetchData() {
+      const user = await getUser();
+      await setUser(user.data);
     }
+    fetchData();
+  }, [])
 
+  const { loading, error, data } = useQuery(GET_GREETING, {
+    variables: {email: user.email},
+  });
+  if (loading) return 'Loading...';
+  if (error) return 'Something bad has happened';
+  if (!data.user) return (
+    <div> Loading </div>
+  )
+
+  const toggleDrawer = (anchor, open) => (event) => {
     setState({ ...state, [anchor]: open });
   };
 
@@ -108,10 +130,10 @@ export default function TemporaryDrawer() {
       </List>
       <Divider />
       <List>
-        {['Put user list of categories here'].map((text, index) => (
-          <ListItem button key={text}>
+        {data.user.categories.map((text, index) => (
+          <ListItem button key={text.id}>
             {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-            <ListItemText primary={text} />
+            <ListItemText primary={text.name} />
           </ListItem>
         ))}
       </List>
@@ -127,23 +149,6 @@ export default function TemporaryDrawer() {
     e.preventDefault();
     console.log("search");
   }
-
-  useEffect(() => {
-    async function fetchData() {
-      const user = await getUser();
-      await setUser(user.data);
-    }
-    fetchData();
-  }, [])
-
-  const { loading, error, data } = useQuery(GET_GREETING, {
-    variables: {email: user.email},
-  });
-  if (loading) return 'Loading...';
-  if (error) return 'Something bad has happened';
-  if (!data.user) return (
-    <div> Loading </div>
-  )
 
   return (
     <div className={classes.root}>
@@ -174,9 +179,15 @@ export default function TemporaryDrawer() {
       <Container maxWidth="xs">
         <Grid container justify="center" spacing={0} direction="column" alignItems="center">
           <Paper className={classes.paper}>
-          <Fab color="secondary" aria-label="add" className={classes.fabButton}>
-              <AddIcon />
-            </Fab>
+            All Foods
+            <Grid container className={classes.context}>
+              Test
+            </Grid>
+            <Grid container className={classes.contextFooter}>
+              <Fab color="secondary" aria-label="add" className={classes.fabButton}>
+                <AddIcon className={classes.add}/>
+              </Fab>
+            </Grid>
           </Paper>
         </Grid>
       </Container>
