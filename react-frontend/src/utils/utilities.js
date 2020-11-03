@@ -22,3 +22,8 @@ export async function getUsers() {
     const response = await axios.get("/auth/users");
     return response;
 }
+
+export async function getUser() {
+    const response = await axios.get("/auth/user");
+    return response;
+}

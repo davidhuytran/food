@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -18,31 +18,57 @@ import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Grid from '@material-ui/core/Grid';
 import { gql, useQuery } from '@apollo/client';
+import Container from '@material-ui/core/Container';
+import Paper from "@material-ui/core/Paper";
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
+import { getUser } from "../utils/utilities"
 
-const useStyles = makeStyles({
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    height: '100vh',
+    background: "linear-gradient(45deg, #9013FE 15%, #50E3C2 90%)",
+    minWidth: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   list: {
     width: 250,
   },
   fullList: {
     width: 'auto',
   },
-});
+  paper: {
+    width: "90%",
+    borderRadius: 30,
+    minHeight: "85vh",
+    margin: theme.spacing(7,0,0),
+    textAlign: "center",
+  },
+  test: {
+    justifyContent: "center",
+    justify: "center",
+    textAlign: "center",
+  },
+  fabButton: {
+    zIndex: 1,
+    justify: "flex-end",
+  },
+}));
 
-// const APPOINTMENT_QUERY = gql`
-//   query Appointment($email: String) {
-//     user(email: $email) {
-//       name
-//       appointments {
-//         id
-//         coach {
-//           id
-//           name
-//         }
-//         date
-//         time
-//       }
-//     }
-//   }`;
+const GET_GREETING = gql`
+  query GetUser($email: String!) {
+    user(email: $email) {
+      email
+      categories {
+        name
+      }
+    }
+  }
+`;
 
 export default function TemporaryDrawer() {
   const classes = useStyles();
@@ -52,6 +78,8 @@ export default function TemporaryDrawer() {
     bottom: false,
     right: false,
   });
+  const [categories, setCategories] = useState([]);
+  const [user, setUser] = useState({});
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -73,7 +101,7 @@ export default function TemporaryDrawer() {
       <List>
         {['Categories'].map((text, index) => (
           <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
             <ListItemText primary={text} />
           </ListItem>
         ))}
@@ -82,7 +110,7 @@ export default function TemporaryDrawer() {
       <List>
         {['Put user list of categories here'].map((text, index) => (
           <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
             <ListItemText primary={text} />
           </ListItem>
         ))}
@@ -90,17 +118,35 @@ export default function TemporaryDrawer() {
     </div>
   );
 
-  // const {loading, error, data } = useQuery(APPOINTMENT_QUERY, {
-  //   variables: {email: user.email}
-  // });
-  // if (loading) return 'Loading...';
-  // if (error) return 'Something bad has happened';
-  // if (!data.user) return (
-  //   <div> Loading </div>
-  // )
+  async function more(e) {
+    e.preventDefault();
+    console.log("more");
+  }
+
+  async function search(e) {
+    e.preventDefault();
+    console.log("search");
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+      const user = await getUser();
+      await setUser(user.data);
+    }
+    fetchData();
+  }, [])
+
+  const { loading, error, data } = useQuery(GET_GREETING, {
+    variables: {email: user.email},
+  });
+  if (loading) return 'Loading...';
+  if (error) return 'Something bad has happened';
+  if (!data.user) return (
+    <div> Loading </div>
+  )
 
   return (
-    <div>
+    <div className={classes.root}>
       <AppBar>
         <Toolbar>
           {['left'].map((anchor) => (
@@ -114,10 +160,10 @@ export default function TemporaryDrawer() {
                 {list(anchor)}
               </Drawer>
               <Grid container justify="flex-end">
-                <IconButton>
+                <IconButton onClick={search}>
                   <SearchIcon/>
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={more}>
                   <MoreIcon />
                 </IconButton>
               </Grid>
@@ -125,6 +171,15 @@ export default function TemporaryDrawer() {
           ))}
         </Toolbar>
       </AppBar>
+      <Container maxWidth="xs">
+        <Grid container justify="center" spacing={0} direction="column" alignItems="center">
+          <Paper className={classes.paper}>
+          <Fab color="secondary" aria-label="add" className={classes.fabButton}>
+              <AddIcon />
+            </Fab>
+          </Paper>
+        </Grid>
+      </Container>
     </div>
   );
 }
