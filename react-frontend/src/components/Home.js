@@ -8,8 +8,6 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from "@material-ui/core/IconButton";
@@ -23,6 +21,9 @@ import Paper from "@material-ui/core/Paper";
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import { getUser } from "../utils/utilities"
+import KitchenIcon from '@material-ui/icons/Kitchen';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
+import EmojiFoodBeverageIcon from '@material-ui/icons/EmojiFoodBeverage';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -89,6 +90,7 @@ export default function TemporaryDrawer() {
   });
   const [categories, setCategories] = useState([]);
   const [user, setUser] = useState({});
+  const [string, setString] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -97,6 +99,12 @@ export default function TemporaryDrawer() {
     }
     fetchData();
   }, [])
+
+  function handleList(e, value) {
+    e.preventDefault();
+    // console.log(myID);
+    setString(value);
+  }
 
   const { loading, error, data } = useQuery(GET_GREETING, {
     variables: {email: user.email},
@@ -123,7 +131,7 @@ export default function TemporaryDrawer() {
       <List>
         {['Categories'].map((text, index) => (
           <ListItem button key={text}>
-            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+            <ListItemIcon> <KitchenIcon/> </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
         ))}
@@ -131,8 +139,8 @@ export default function TemporaryDrawer() {
       <Divider />
       <List>
         {data.user.categories.map((text, index) => (
-          <ListItem button key={text.id}>
-            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+          <ListItem button key={text.id} value={text.id} onClick={e => handleList(e, text.id)}>
+            <ListItemIcon>{index % 2 === 0 ? <FastfoodIcon /> : <EmojiFoodBeverageIcon />}</ListItemIcon>
             <ListItemText primary={text.name} />
           </ListItem>
         ))}
@@ -181,7 +189,7 @@ export default function TemporaryDrawer() {
           <Paper className={classes.paper}>
             All Foods
             <Grid container className={classes.context}>
-              Test
+              {string}
             </Grid>
             <Grid container className={classes.contextFooter}>
               <Fab color="secondary" aria-label="add" className={classes.fabButton}>
