@@ -56,8 +56,12 @@ router.post("/login", (req, res, next) => {
   });
 
 router.get("/users", async (req, res) => {
-    const users = await User.find({});
-    res.send(users);
+  const users = await User.find({});
+  res.send(users);
+})
+
+router.get("/user", (req, res) => {
+  res.send(req.user);
 })
 
 module.exports = router;

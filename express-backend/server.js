@@ -6,6 +6,8 @@ const logger = require("morgan");
 const passport = require("passport");
 const { ApolloServer } = require("apollo-server-express");
 const schema = require("./db/gql");
+const cookieSession = require('cookie-session');
+const keys = require('./configs/keys');
 
 require('./db');
 require("./services/passport");
@@ -21,8 +23,17 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+//  Cookie session
+app.use(cookieSession({
+    keys: [keys.cookieKey],
+    maxAge: 180 * 24 * 60 * 60 * 1000,
+}))
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+
 
 //  Routes
 app.use("/auth",  require("./routes/auth"));
