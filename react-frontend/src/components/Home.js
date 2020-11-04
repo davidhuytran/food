@@ -24,6 +24,8 @@ import { getUser } from "../utils/utilities"
 import KitchenIcon from '@material-ui/icons/Kitchen';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import EmojiFoodBeverageIcon from '@material-ui/icons/EmojiFoodBeverage';
+import Typography from '@material-ui/core/Typography';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+
   },
   list: {
     width: 250,
@@ -48,24 +51,40 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(7,0,0),
     textAlign: "center",
     maxHeight: "85vh",
-
+  },
+  header: {
+    minHeight: "8vh",
+    maxHeight: "8vh",
+    alignContent: "flex-end",
+    // backgroundColor: "yellow",
+    zIndex: 1,
+  },
+  context: {
+    minHeight: "68vh",
+    justifyContent: "flex-start",
+    // backgroundColor: "green",
+  },
+  contextFooter: {
+    minHeight: "9vh",
+    justifyContent: "flex-end",
+    alignContent: "flex-start",
+    // backgroundColor: "red",
+    zIndex:2,
+    
   },
   fabButton: {
     zIndex: 1,
     height: "6vh",
     width: "6vh",
-    margin: theme.spacing(-6,2,0)
-  },
-  context: {
-    minHeight: "80vh",
-  },
-  contextFooter: {
-    justifyContent: "flex-end",
-    alignContent: "flex-end",
-    
+    margin: theme.spacing(0,3,0)
   },
   add: {
     width: "6vw",
+  },
+  foodImg: {
+    width:"20vw",
+    height: "auto",
+    margin: theme.spacing(1,2,1),
   }
 }));
 
@@ -122,16 +141,9 @@ const GET_CATEGORY = gql`
     variables: {id: categoryId}
   });
 
-  if (data_category) {
-    console.log(data_category);
-    // data_category.category.recipesList.map((text,index) => {
-    //   console.log(text.name);
-    // })
-  }
-
   if (loading_user) return 'Loading...';
   if (error_user) return 'Something bad has happened';
-  if (!data_user.user) return (
+  if (!data_user) return (
     <div> Loading </div>
   )
 
@@ -180,6 +192,7 @@ const GET_CATEGORY = gql`
 
   return (
     <div className={classes.root}>
+
       <AppBar>
         <Toolbar>
           {['left'].map((anchor) => (
@@ -204,25 +217,39 @@ const GET_CATEGORY = gql`
           ))}
         </Toolbar>
       </AppBar>
+
       <Container maxWidth="xs">
         <Grid container justify="center" spacing={0} direction="column" alignItems="center">
           <Paper className={classes.paper}>
-            <div>All Foods</div>
-            <Grid container className={classes.context} justify="center">
+
+            <Grid container className={classes.header} justify="center">
+              <Typography variant="h4" gutterBottom>
+                {(data_category) ? data_category.category.name : "All Foods"}
+              </Typography>
+            </Grid>
+
+            <Grid container className={classes.context}>
               <div>
                 {(data_category) ? data_category.category.recipesList.map((text, index) => (
-                    <div> {text.name} </div>
+                    <div>
+                      <img src={process.env.PUBLIC_URL + "/images/sample.jpeg"} className={classes.foodImg}/> 
+                      <Typography variant="body1"> {text.name} </Typography>
+                    </div>
                 )): "" }
               </div>
             </Grid>
+
             <Grid container className={classes.contextFooter}>
               <Fab color="secondary" aria-label="add" className={classes.fabButton}>
                 <AddIcon className={classes.add}/>
               </Fab>
             </Grid>
+
           </Paper>
         </Grid>
+        
       </Container>
+
     </div>
   );
 }
