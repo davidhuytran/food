@@ -17,6 +17,7 @@ const typeDefs = gql`
         id: ID
         name: String
         user: User
+        recipesList: [Recipe]
     }
 
     type Recipe {
@@ -47,6 +48,7 @@ const typeDefs = gql`
         ): Ingredient
         addRecipe(name: String): Recipe
         addRecipeToCategory(category_id: ID, recipe_id: ID) : Category
+        testing: String
     }
 
     type Query {

@@ -5,7 +5,7 @@ const resolvers = {
         users: () => User.find(),
         user: (parent, args) => User.findOne({ email: args.email }),
         categories: () => Category.find(),
-        category: (parent, args) => Category.findOne({ id: args.id }), 
+        category: (parent, args) => Category.findById(args.id), 
         recipes: () => Recipe.find(),
         recipe: (parent, args) => Recipe.findById(args.id),
         ingredients: () => Ingredient.find(),
@@ -43,8 +43,12 @@ const resolvers = {
         addRecipeToCategory: async (parent, args) => {
             const theRecipe = await Recipe.findById(args.recipe_id);
             const theCategory = await Category.findById(args.category_id)
+            if (theRecipe && theCategory) {
+                theCategory.recipesList.push(theRecipe);
+                theCategory.save();
+            }
             return theCategory;
-        }
+        },
     }
 };
 

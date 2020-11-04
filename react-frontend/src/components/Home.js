@@ -15,7 +15,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Grid from '@material-ui/core/Grid';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useLazyQuery } from '@apollo/client';
 import Container from '@material-ui/core/Container';
 import Paper from "@material-ui/core/Paper";
 import AddIcon from '@material-ui/icons/Add';
@@ -24,7 +24,6 @@ import { getUser } from "../utils/utilities"
 import KitchenIcon from '@material-ui/icons/Kitchen';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import EmojiFoodBeverageIcon from '@material-ui/icons/EmojiFoodBeverage';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,11 +66,33 @@ const useStyles = makeStyles((theme) => ({
   },
   add: {
     width: "6vw",
-
   }
 }));
 
-const GET_USER = gql`
+export default function TemporaryDrawer() {
+  const classes = useStyles();
+  const [state, setState] = useState({
+    left: false,
+  });
+  const [categories, setCategories] = useState([]);
+  const [user, setUser] = useState({});
+  const [categoryId, setCategoryId] = useState("");
+  const [recipes, setRecipes] = useState();
+
+  useEffect(() => {
+    async function fetchData() {
+      const user = await getUser();
+      await setUser(user.data);
+    }
+    fetchData();
+  }, [])
+
+  function HandleList(e, value) {
+    e.preventDefault();
+    setCategoryId(value); //Category ID to work with
+  }
+
+  const GET_USER = gql`
   query GetUser($email: String!) {
     user(email: $email) {
       email
@@ -83,37 +104,33 @@ const GET_USER = gql`
   }
 `;
 
-// const GET_CATEGORY = gql`
-
-// `;
-
-export default function TemporaryDrawer() {
-  const classes = useStyles();
-  const [state, setState] = useState({
-    left: false,
-  });
-  const [categories, setCategories] = useState([]);
-  const [user, setUser] = useState({});
-  const [categoryId, setCategoryId] = useState("");
-
-  useEffect(() => {
-    async function fetchData() {
-      const user = await getUser();
-      await setUser(user.data);
+const GET_CATEGORY = gql`
+  query GetCategory($id: ID!) {
+    category(id: $id) {
+      name
+      recipesList {
+        name
+      }
     }
-    fetchData();
-  }, [])
-
-  function handleList(e, value) {
-    e.preventDefault();
-    setCategoryId(value);
   }
+`;
 
-  const { loading: loading_user, error, data: data_user } = useQuery(GET_USER, {
+  const { loading: loading_user, error_user, data: data_user } = useQuery(GET_USER, {
     variables: {email: user.email},
   });
+  const { loading: loading_category, error_category, data: data_category } = useQuery(GET_CATEGORY, {
+    variables: {id: categoryId}
+  });
+
+  if (data_category) {
+    console.log(data_category);
+    // data_category.category.recipesList.map((text,index) => {
+    //   console.log(text.name);
+    // })
+  }
+
   if (loading_user) return 'Loading...';
-  if (error) return 'Something bad has happened';
+  if (error_user) return 'Something bad has happened';
   if (!data_user.user) return (
     <div> Loading </div>
   )
@@ -142,7 +159,7 @@ export default function TemporaryDrawer() {
       <Divider />
       <List>
         {data_user.user.categories.map((text, index) => (
-          <ListItem button key={text.id} value={text.id} onClick={e => handleList(e, text.id)}>
+          <ListItem button key={text.id} value={text.id} onClick={e => HandleList(e, text.id)}>
             <ListItemIcon>{index % 2 === 0 ? <FastfoodIcon /> : <EmojiFoodBeverageIcon />}</ListItemIcon>
             <ListItemText primary={text.name} />
           </ListItem>
@@ -190,9 +207,13 @@ export default function TemporaryDrawer() {
       <Container maxWidth="xs">
         <Grid container justify="center" spacing={0} direction="column" alignItems="center">
           <Paper className={classes.paper}>
-            All Foods
-            <Grid container className={classes.context}>
-              {categoryId}
+            <div>All Foods</div>
+            <Grid container className={classes.context} justify="center">
+              <div>
+                {(data_category) ? data_category.category.recipesList.map((text, index) => (
+                    <div> {text.name} </div>
+                )): "" }
+              </div>
             </Grid>
             <Grid container className={classes.contextFooter}>
               <Fab color="secondary" aria-label="add" className={classes.fabButton}>
