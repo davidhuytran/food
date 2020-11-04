@@ -25,7 +25,12 @@ import KitchenIcon from '@material-ui/icons/Kitchen';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import EmojiFoodBeverageIcon from '@material-ui/icons/EmojiFoodBeverage';
 import Typography from '@material-ui/core/Typography';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle'
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,10 +38,7 @@ const useStyles = makeStyles((theme) => ({
     background: "linear-gradient(45deg, #9013FE 15%, #50E3C2 90%)",
     minWidth: "100%",
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
-
   },
   list: {
     width: 250,
@@ -60,12 +62,14 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
   },
   context: {
-    minHeight: "68vh",
+    minHeight: "67vh",
+    maxHeight: "67vh",
     justifyContent: "flex-start",
+    overflow: "scroll",
     // backgroundColor: "green",
   },
   contextFooter: {
-    minHeight: "9vh",
+    minHeight: "10vh",
     justifyContent: "flex-end",
     alignContent: "flex-start",
     // backgroundColor: "red",
@@ -76,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
     height: "6vh",
     width: "6vh",
-    margin: theme.spacing(0,3,0)
+    margin: theme.spacing(1,3,0)
   },
   add: {
     width: "6vw",
@@ -88,7 +92,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function TemporaryDrawer() {
+export default function Home() {
+  const [open, setOpen] = useState(false);
   const classes = useStyles();
   const [state, setState] = useState({
     left: false,
@@ -190,6 +195,19 @@ const GET_CATEGORY = gql`
     console.log("search");
   }
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+  }
+
+  const handleAdd = () => {
+    console.log("add"); //Add function to add recipe
+    setOpen(false);
+  }
+
   return (
     <div className={classes.root}>
 
@@ -231,18 +249,39 @@ const GET_CATEGORY = gql`
             <Grid container className={classes.context}>
               <div>
                 {(data_category) ? data_category.category.recipesList.map((text, index) => (
-                    <div>
+                    <Grid item xs={12} sm container>
                       <img src={process.env.PUBLIC_URL + "/images/sample.jpeg"} className={classes.foodImg}/> 
-                      <Typography variant="body1"> {text.name} </Typography>
-                    </div>
+                       {text.name}
+                    </Grid>
                 )): "" }
               </div>
             </Grid>
 
             <Grid container className={classes.contextFooter}>
-              <Fab color="secondary" aria-label="add" className={classes.fabButton}>
+              <Fab color="secondary" aria-label="add" className={classes.fabButton} onClick={handleClickOpen}>
                 <AddIcon className={classes.add}/>
               </Fab>
+              <Dialog open={open} onClose={handleClose}  aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Recipe Name</DialogTitle>
+                <DialogContent>
+                </DialogContent>
+                  <TextField
+                  autoFocus
+                  margin="normal"
+                  id="name"
+                  type="recipe"
+                  autoComplete="off"
+                  />
+                <DialogActions>
+                  <Button onClick={handleClose} color="primary">
+                    Cancel
+                  </Button>
+                  <Button onClick={handleAdd} color="primary">
+                    Add
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
             </Grid>
 
           </Paper>
